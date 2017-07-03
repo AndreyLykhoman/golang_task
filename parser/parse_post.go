@@ -1,10 +1,6 @@
 package main
-//TODO: rewrite that file to build site's article list parser controller
-//ToDo: rebase to main folder list_post
 
-//TODO: rewite application code to use chanel and go routine
 import (
-
 	"parser/entity/parser"
 	"parser/entity/site"
 	"parser/entity/db"
@@ -32,8 +28,6 @@ func postScrape(removeSite site.RemoteSite) {
 
 }
 func main() {
-
-
 	mysql := db.Open()
 	defer mysql.Close()
 	var siteWG sync.WaitGroup

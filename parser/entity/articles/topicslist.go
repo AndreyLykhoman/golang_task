@@ -9,6 +9,7 @@ type TopicsList struct {
 func (tl TopicsList) CountTopicsInString(source string)(resTagMap map[string] int)  {
 	resTagMap = make(map[string] int)
 	loverString := strings.ToLower(source)
+
 	for _, topic := range tl.Topics {
 		count := strings.Count(loverString, topic.Name)
 		resTagMap[topic.Name] = count

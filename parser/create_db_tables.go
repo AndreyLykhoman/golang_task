@@ -27,12 +27,12 @@ func CreateDatabasesTables()  {
 	topicToArticleTable := GetTopicToArticleTableFields()
 	mysq.CreateTable("topic_to_article", topicToArticleTable, "KEY topic_id (topic_id),KEY article_id (article_id)")
 
-	/*mysq.Query("ALTER TABLE topic ADD CONSTRAINT fk_topic_to_tag_topic FOREIGN KEY (id) REFERENCES  topic_to_tag (topic_id) ON DELETE CASCADE ON UPDATE CASCADE;")
+	mysq.Query("ALTER TABLE topic ADD CONSTRAINT fk_topic_to_tag_topic FOREIGN KEY (id) REFERENCES  topic_to_tag (topic_id) ON DELETE CASCADE ON UPDATE CASCADE;")
 	mysq.Query("ALTER TABLE tag ADD CONSTRAINT fk_topic_to_tag_tag FOREIGN KEY (id) REFERENCES topic_to_tag (tag_id) ON DELETE CASCADE ON UPDATE CASCADE;")
 	mysq.Query("ALTER TABLE topic ADD CONSTRAINT fk_topic_to_article_topic FOREIGN KEY (id) REFERENCES topic_to_article (topic_id) ON DELETE CASCADE ON UPDATE CASCADE;")
 	mysq.Query("ALTER TABLE article ADD CONSTRAINT fk_topic_to_article_article FOREIGN KEY (id) REFERENCES topic_to_article (article_id) ON DELETE CASCADE ON UPDATE CASCADE;")
 
-*/
+
 
 }
 
