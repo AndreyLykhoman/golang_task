@@ -6,6 +6,8 @@ type TopicsList struct {
 	Topics [] Topic
 }
 // TODO: переписать на реализацию с тегами используя map(string) int как набор тегов и написать структуру в которую поместить текст подсчитанный на вхождение слов. после этого найти максимально совпадение тегов категорий к тексту
+
+
 func (tl TopicsList) CountTopicsInString(source string)(resTagMap map[string] int)  {
 	resTagMap = make(map[string] int)
 	loverString := strings.ToLower(source)

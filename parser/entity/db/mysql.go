@@ -6,6 +6,8 @@ import(
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"strings"
+	"strconv"
 )
 
 const(
@@ -94,21 +96,21 @@ func (db *Mysql) CreateTable (name string, fields []TabelsFiels, key string ,pri
 	}
 }
 
+// use articles;
+//SELECT topic.name as topic, t.tag_name as tags  FROM (Select topic_to_tag.topic_id as id, tag.name as tag_name from topic_to_tag Inner Join tag ON tag.id = topic_to_tag.tag_id ) as t inner join topic on topic.id = t.id;
 func (db Mysql) GetTopics() ( tl article.TopicsList) {
-	//TODO: rewrite that code to use db
-
-	_, err := db.dataBase.Query("SELECT *  FROM site")
+	row, err := db.dataBase.Query("SELECT topic.id as id, topic.name as topic, GROUP_CONCAT(t.tag_name ORDER BY t.tag_name  DESC SEPARATOR ',') as tags  FROM (Select topic_to_tag.topic_id as id, tag.name as tag_name from topic_to_tag Inner Join tag ON tag.id = topic_to_tag.tag_id ) as t inner join topic on topic.id = t.id group by topic.id;")
 	if err != nil {
 		panic(err)
 	}
-	strTag := []string{
-		"php",
-		"pyhton",
-		"java",
-		"администрирование",
-	}
-	for id, name := range strTag {
-		tl.AddNewTopics(article.Topic{id,name, []string{"php", "laravel"}})
+	for row.Next() {
+		var topic_id string
+		var topic_name string
+		var tags string
+		err = row.Scan(&topic_id, &topic_name,&tags )
+		sliceTags := strings.Split(tags, ",")
+		intIndex , _ := strconv.Atoi(topic_id)
+		tl.AddNewTopics(article.Topic{intIndex,topic_name, sliceTags})
 	}
 	return
 }
