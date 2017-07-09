@@ -2,6 +2,7 @@ package main
 
 import (
 	"parser/entity/db"
+	"parser/entity/site"
 )
 
 func CreateDatabasesTables()  {
@@ -27,11 +28,10 @@ func CreateDatabasesTables()  {
 	topicToArticleTable := GetTopicToArticleTableFields()
 	mysq.CreateTable("topic_to_article", topicToArticleTable, "KEY topic_id (topic_id),KEY article_id (article_id)")
 
-	mysq.Query("ALTER TABLE topic ADD CONSTRAINT fk_topic_to_tag_topic FOREIGN KEY (id) REFERENCES  topic_to_tag (topic_id) ON DELETE CASCADE ON UPDATE CASCADE;")
-	mysq.Query("ALTER TABLE tag ADD CONSTRAINT fk_topic_to_tag_tag FOREIGN KEY (id) REFERENCES topic_to_tag (tag_id) ON DELETE CASCADE ON UPDATE CASCADE;")
-	mysq.Query("ALTER TABLE topic ADD CONSTRAINT fk_topic_to_article_topic FOREIGN KEY (id) REFERENCES topic_to_article (topic_id) ON DELETE CASCADE ON UPDATE CASCADE;")
-	mysq.Query("ALTER TABLE article ADD CONSTRAINT fk_topic_to_article_article FOREIGN KEY (id) REFERENCES topic_to_article (article_id) ON DELETE CASCADE ON UPDATE CASCADE;")
-
+	mysq.Query("ALTER TABLE topic_to_tag ADD CONSTRAINT fk_topic_to_tag_topic FOREIGN KEY (topic_id) REFERENCES  topic (id) ON DELETE CASCADE ON UPDATE CASCADE;")
+	mysq.Query("ALTER TABLE topic_to_tag ADD CONSTRAINT fk_topic_to_tag_tag FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE ON UPDATE CASCADE;")
+	mysq.Query("ALTER TABLE topic_to_article ADD CONSTRAINT fk_topic_to_article_topic FOREIGN KEY (topic_id) REFERENCES topic (id) ON DELETE CASCADE ON UPDATE CASCADE;")
+	mysq.Query("ALTER TABLE topic_to_article ADD CONSTRAINT fk_topic_to_article_article FOREIGN KEY (article_id) REFERENCES article (id) ON DELETE CASCADE ON UPDATE CASCADE;")
 
 
 }
@@ -191,18 +191,24 @@ func GetTopicToArticleTableFields() []db.TabelsFiels  {
 
 
 func main() {
-	CreateDatabasesTables()
+	//CreateDatabasesTables()
 	mysq := db.Open()
 	defer mysq.Close()
-	mysq.SetTopicWithTags("Go" , []string{
-		"go",
-		"golang",
-		"javascript",
-		"программирование",
-		"benchmark",
-		"ооп",
-		"docker",
-		"html",
-		"rust",
-	} )
+	//mysq.SetTopicWithTags("Go" , []string{
+	//	"go",
+	//	"golang",
+	//	"javascript",
+	//	"программирование",
+	//	"benchmark",
+	//	"ооп",
+	//	"docker",
+	//	"html",
+	//	"rust",
+	//} )
+	remoteSite := []site.RemoteSite{
+		site.RemoteSite{"https://habrahabr.ru/", ".post__title_link"},
+		site.RemoteSite{"https://geektimes.ru/", ".post__title_link"},
+	}
+	mysq.SetRemoteSiteSlice(remoteSite)
+
 }

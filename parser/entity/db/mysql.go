@@ -133,10 +133,26 @@ func (db Mysql) GetRemoteSiteSlice() (sites [] site.RemoteSite) {
 	}
 	return
 }
+//TODO : check issue in query
+func (db Mysql) SetRemoteSiteSlice(sites []site.RemoteSite)  {
+	var biteInsert [] byte;
+	for index, site := range sites {
+		strInsert := fmt.Sprintf("(`%v`, `%v`, `%v`)", "new site", site.GetUrl(), site.GetLinksSelector())
+		if index != 0 {
+			strInsert = ","+strInsert
+		}
+		biteInsert = append(biteInsert, []byte(strInsert)...)
+	}
+	fmt.Println(fmt.Sprintf("INSERT INTO `site` (`name`, `url`, `link_selector`) VALUES%v ;", string(biteInsert)))
+	_, err := db.dataBase.Prepare(fmt.Sprintf("INSERT INTO `site` (`name`, `url`, `link_selector`) VALUES%v ;",string(biteInsert)))
+	if err != nil {
+		panic(err)
+	}
+}
 
 func (db *Mysql) SetTopicWithTags(topic string, tags []string)  {
 
-	stmt, err := db.dataBase.Prepare("INSERT INTO `articles`.`topic` (`name`) VALUES (?);")
+	stmt, err := db.dataBase.Prepare("INSERT INTO `topic` (`name`) VALUES (?);")
 	if err != nil {
 		panic(err)
 	}
@@ -153,7 +169,7 @@ func (db *Mysql) SetTopicWithTags(topic string, tags []string)  {
 
 	var tagIds [] int;
 	for _, tag := range tags {
-		stmt, err = db.dataBase.Prepare("INSERT INTO `articles`.`tag` (`name`) VALUES (?);")
+		stmt, err = db.dataBase.Prepare("INSERT INTO `tag` (`name`) VALUES (?);")
 		if err != nil {
 			panic(err)
 		}
@@ -177,7 +193,7 @@ func (db *Mysql) SetTopicWithTags(topic string, tags []string)  {
 		//	topic_id,
 		//	tagId) )...)
 		_, err = db.dataBase.Query(fmt.Sprintf(
-			"INSERT INTO `articles`.`topic_to_tag` (`topic_id`, `tag_id`) VALUES ( %v, %v );",
+			"INSERT INTO `topic_to_tag` (`topic_id`, `tag_id`) VALUES ( %v, %v );",
 			topic_id,
 			tagId) )
 		if err != nil {
